@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    h1 {
+        @apply text-2xl;
+    }
+    h2 {
+        @apply text-xl;
+    }
+    h3 {
+        @apply text-lg;
+    }
+}
+
+:root {
+    /*hex*/
+/*    --default-light: #E5E7EB;
+    --default: #9CA3AF;
+    --default-dark: #1F2937;
+    --primary-light: #cabbdd;
+    --primary: #120078;
+    --primary-dark: #17083c;
+    --secondary-light: #eac8e3;
+    --secondary: #9d0191;
+    --secondary-dark: #4d1447;
+    --tertiary-light: #ffd4d7;
+    --tertiary: #fd3a69;
+    --tertiary-dark: #782635;
+    --quaternary-light: #fff2cc;
+    --quaternary: #fecd1a;
+    --quaternary-dark: #78611b;*/
+
+    /*rgb*/
+/*    --default-light-rgb: 229, 231, 235;
+    --default-rgb: 156, 163, 175;
+    --default-dark-rgb: 31, 41, 55;*/
+
+
+    /*--default-light-rgb: 202, 187, 221;*/
+    --default-rgb: 18, 0, 120;
+    /*--default-dark-rgb: 23, 8, 60;*/
+    /*--primary-light-rgb: 234, 200, 227;*/
+    --primary-rgb: 157, 1, 145;
+    /*--primary-dark-rgb: 77, 20, 71;*/
+    /*--secondary-light-rgb: 255, 212, 215;*/
+    --secondary-rgb: 253, 58, 105;
+    /*--secondary-dark-rgb: 120, 38, 53;*/
+    /*--tertiary-light-rgb: 255, 242, 204;*/
+    --tertiary-rgb: 254, 205, 26;
+    /*--tertiary-dark-rgb: 120, 97, 27;*/
+
+    --alpha-0: 0;
+    --alpha-10: 0.1;
+    --alpha-20: 0.2;
+    --alpha-30: 0.3;
+    --alpha-40: 0.4;
+    --alpha-50: 0.5;
+    --alpha-60: 0.6;
+    --alpha-70: 0.7;
+    --alpha-80: 0.8;
+    --alpha-90: 0.9;
+    --alpha-100: 1;
+
+    --fm-default: var(--default-rgb);
+    --fm-default-dark: 0, 0, 0;
+    --fm-default-light: 255, 255, 255;
+
+    --fm-default-text: 255, 255, 255;
+}
+
+[data-type=primary] {
+    --fm-default: var(--primary-rgb);
+}
+
+[data-type=secondary] {
+    --fm-default: var(--secondary-rgb);
+}
+
+[data-type=tertiary] {
+    --fm-default: var(--tertiary-rgb);
+    --fm-default-text: var(--fm-default-dark);
+}
+
+[class*=fm-],
+[class*=fm-] input {
+    outline: 2px solid transparent !important;
+    outline-offset: 2px !important;
+}
+
+
+
+/*
+primary-light: #cabbdd;
+primary: #120078;
+primary-dark: #17083c;
+secondary-light: #eac8e3;
+secondary: #9d0191;
+secondary-dark: #4d1447;
+tertiary-light: #ffd4d7;
+tertiary: #fd3a69;
+tertiary-dark: #782635;
+quaternary-light: #fff2cc;
+quaternary: #fecd1a;
+quaternary-dark: #78611b;*/
