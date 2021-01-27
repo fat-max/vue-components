@@ -2,7 +2,9 @@ import Vue from 'vue';
 import Dev from './serve.vue';
 
 import FatMax from '@/entry';
-import '@/assets/fat-max.css';
+// import '@/assets/fat-max.css';
+import '../src/assets/fat-max.css';
+// import '@/assets/fat-max.css';
 
 Vue.config.productionTip = false;
 Vue.use(FatMax);

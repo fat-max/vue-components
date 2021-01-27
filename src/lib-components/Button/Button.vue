@@ -13,38 +13,19 @@
 </template>
 
 <script>
-  import * as outlineIcons from '@vue-hero-icons/outline'
-  import * as solidIcons from '@vue-hero-icons/solid'
-  import style from './../../mixins/style'
-
-  const allIcons = {
-    outline: outlineIcons,
-    solid: solidIcons,
-  }
+  import style from '@/mixins/style'
+  import icon from '@/mixins/icon'
 
   export default {
     name: 'FmButton',
-    mixins: [style],
+    mixins: [style, icon],
     props: {
       tag: {
         type: String,
         default: 'button'
       },
-      solid: {
-        type: Boolean,
-        default: false
-      },
-      icon: {
-        type: String,
-        default: null
-      },
     },
     computed: {
-      iconComponent () {
-        if (!this.icon) return
-
-        return allIcons[this.solid ? 'solid' : 'outline'][this.icon + 'Icon']
-      },
       component () {
         return this.tag
       },
@@ -76,7 +57,7 @@
   color: rgb(var(--fm-button-default));
 
   &:not(.contained) {
-    filter: brightness(80%);
+    /*filter: brightness(80%);*/
   }
 
   &.active,
@@ -86,7 +67,7 @@
 
   &.contained {
     background-color: rgb(var(--fm-button-default));
-    color: rgb(var(--fm-default-text));
+    color: rgb(var(--fm-button-default-text));
 
     &:hover {
       background-color: rgba(var(--fm-button-default), var(--alpha-80));

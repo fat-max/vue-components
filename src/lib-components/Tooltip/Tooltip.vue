@@ -1,14 +1,14 @@
 <template>
   <div class="fm-tooltip" :class="classes" :data-type="dataType">
     <slot />
-    <div class="tooltip" :class="position">
+    <div class="tooltip" :class="tooltipClass">
       <span>{{ text }}</span>
     </div>
   </div>
 </template>
 
 <script>
-  import style from './../../mixins/style'
+  import style from '@/mixins/style'
 
   export default {
     name: 'FmTooltip',
@@ -25,7 +25,12 @@
     },
     computed: {
       tooltipClass () {
-        return this.position
+        return [
+          ...this.classes,
+          [
+            this.position,
+          ],
+        ]
       }
     }
   }
@@ -42,8 +47,6 @@
   display: inline-block;
 
   .tooltip {
-    /*@apply absolute text-white opacity-100 transition-opacity ease-linear duration-300 left-1/2 z-10 text-center px-2 py-1 bg-default-dark bg-opacity-75 cursor-default;*/
-    /*@apply absolute hidden text-white opacity-0 transition-opacity ease-linear duration-300 left-1/2 z-10 text-center px-2 py-1 bg-default-dark bg-opacity-75 cursor-default;*/
     
     position: absolute;
     transition-property: opacity;
@@ -59,11 +62,6 @@
     background-color: rgba(var(--fm-tooltip-default), var(--alpha-100));
     color: rgb(var(--fm-tooltip-default-text));
     opacity: 0;
-
-/*    span::after {
-      @apply bottom-full left-1/2 -mt-2;
-      border-color: transparent transparent rgba(var(--fm-tooltip-default), var(--alpha-100)) transparent;
-    }*/
 
     span {
       &::after {
@@ -122,64 +120,9 @@
     }
   }
 
-  .tooltip-right {
-    @apply left-full top-0 ml-2;
-
-    span::after {
-      @apply right-full -ml-0 top-4;
-      border-color: transparent rgba(var(--fm-tooltip-default), var(--alpha-100)) transparent transparent;
-    }
-  }
-
-  &:hover .tooltip {
+  &:hover .tooltip,
+  .tooltip.active {
     opacity: 1;
   }
 }
-
-/*.fm-tooltip-primary {
-  [class^="tooltip"] {
-    @apply bg-primary-light bg-opacity-25;
-    span::after {
-      @apply border-opacity-5;
-    }
-  }
-  .tooltip-bottom span::after {border-color: transparent transparent color(theme('colors.primary.dark') a(75%)) transparent;}
-  .tooltip-top span::after {border-color: theme('colors.primary.dark') transparent transparent transparent;}
-  .tooltip-left span::after {border-color: transparent transparent transparent color(theme('colors.primary.dark') a(75%));}
-  .tooltip-right span::after {border-color: transparent color(theme('colors.primary.dark') a(75%)) transparent transparent;}
-}
-
-.fm-tooltip-secondary {
-  & [class^="tooltip"] {
-    @apply bg-secondary-dark bg-opacity-75;
-  }
-
-  .tooltip-bottom span::after {border-color: transparent transparent color(theme('colors.secondary.dark') a(75%)) transparent;}
-  .tooltip-top span::after {border-color: theme('colors.secondary.dark') transparent transparent transparent;}
-  .tooltip-left span::after {border-color: transparent transparent transparent color(theme('colors.secondary.dark') a(75%));}
-  .tooltip-right span::after {border-color: transparent color(theme('colors.secondary.dark') a(75%)) transparent transparent;}
-}
-
-.fm-tooltip-tertiary {
-  & [class^="tooltip"] {
-    @apply bg-tertiary-dark bg-opacity-75;
-  }
-
-  .tooltip-bottom span::after {border-color: transparent transparent color(theme('colors.tertiary.dark') a(75%)) transparent;}
-  .tooltip-top span::after {border-color: color(theme('colors.tertiary.dark') a(75%)) transparent transparent transparent;}
-  .tooltip-left span::after {border-color: transparent transparent transparent color(theme('colors.tertiary.dark') a(75%));}
-  .tooltip-right span::after {border-color: transparent color(theme('colors.tertiary.dark') a(75%)) transparent transparent;}
-}
-
-.fm-tooltip-quaternary {
-  & [class^="tooltip"] {
-    @apply bg-quaternary-dark bg-opacity-75;
-  }
-
-  .tooltip-bottom span::after {border-color: transparent transparent color(theme('colors.quaternary.dark') a(75%)) transparent;}
-  .tooltip-top span::after {border-color: color(theme('colors.quaternary.dark') a(75%)) transparent transparent transparent;}
-  .tooltip-left span::after {border-color: transparent transparent transparent color(theme('colors.quaternary.dark') a(75%));}
-  .tooltip-right span::after {border-color: transparent color(theme('colors.quaternary.dark') a(75%)) transparent transparent;}
-}*/
-
 </style>

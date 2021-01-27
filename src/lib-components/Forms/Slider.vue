@@ -23,7 +23,6 @@
         v-if="bubble"
         :for="'id-' + _uid"
         :ref="'output-' + _uid"
-        class="absolute px-2 rounded-lg inline-block text-center font-semibold text-white"
         :style="style"
       >{{ value }}</output>
     </div>
@@ -37,7 +36,7 @@
 </template>
 
 <script>
-  import style from './../../mixins/style'
+  import style from '@/mixins/style'
 
   export default {
     name: 'FmSlider',
@@ -75,7 +74,6 @@
     data: () => ({
       value: null,
       bubbleX: null,
-      offset: null,
       initThumb: false,
     }),
     computed: {
@@ -90,7 +88,8 @@
       style () {
         if (this.value === null) return {display: 'none'}
 
-        return {left: this.bubbleX +'px', 'margin-left': this.offset + '%'}
+        return {left: this.bubbleX}
+        // return {left: this.bubbleX +'px', 'margin-left': this.offset + '%'}
       },
       width () {
         return parseInt(this.$refs['range-' + this._uid].clientWidth)
@@ -100,31 +99,24 @@
       value () {
         if (!this.bubble) return
 
-        let min = parseInt(this.min)
-        let percent = (parseInt(this.value) - min)/(parseInt(this.max) - min)
-        this.offset = -1
+        const min = parseInt(this.min)
+        const max = parseInt(this.max)
+        const newVal = Number(((this.value - min) * 100) / (max - min))
 
-        if (percent < 0) {
-          this.bubbleX = 0
-        } else if (percent > 1) {
-          this.bubbleX = this.width
-        } else {
-          this.bubbleX = this.width * percent + this.offset
-          this.offset -= percent
-        }
+        this.bubbleX = `calc(${newVal}% + (${4 - newVal * 0.1}px))`
       },
     },
   }
 </script>
 
-<style scoped>
+<style>
 .fm-slider {
   --fm-slider-default: var(--fm-default);
   --fm-slider-default-light: var(--fm-default-light);
   --fm-slider-default-dark: var(--fm-default-dark);
   --fm-slider-default-text: var(--fm-default-text);
 
-  input[type=range] {
+  input {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -135,8 +127,8 @@
     /*&::-moz-range-track*/
     /*&::-ms-track*/
     &::-webkit-slider-runnable-track {
-      background-color: rgba(var(--fm-slider-default), var(--alpha-50));
-      height: 0.25rem;
+      border: 2px solid rgb(var(--fm-slider-default));
+      height: 1em;
     }
 
     /*&::-ms-thumb*/
@@ -145,82 +137,86 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      background-color: rgb(var(--fm-slider-default-light));
-      border:2px solid rgb(var(--fm-slider-default));
-      border-radius: 50%;
-      height: 1rem;
-      width: 1rem;
-      margin-top: -0.4rem;
-
-
-      /*background-color: rgb(var(--fm-slider-default));*/
-
+      background-color: rgb(var(--fm-slider-default));
+      height: 1em;
+      width: 1em;
+      margin-top: -2px;
     }
 
-
-    &:disabled,
-    &[disabled] {
+    &:disabled {
       cursor: default;
 
       /*&::-moz-range-track*/
       /*&::-ms-track*/
       &::-webkit-slider-runnable-track {
         background-color: rgba(var(--fm-slider-default-dark), var(--alpha-10)) !important;
+        border-color: transparent;
       }
+    }
 
-      /*&::-moz-range-thumb*/
+    &:disabled {
       /*&::-ms-thumb*/
+      /*&::-ms-range-thumb*/
       &::-webkit-slider-thumb {
-        background-color: rgba(var(--fm-slider-default-dark), var(--alpha-30)) !important;
-        border: .6rem solid rgb(var(--fm-slider-default-light));
-        height: 1.8rem;
-        width: 1.8rem;
-        margin-top: -0.75rem;
+        background-color: rgba(var(--fm-slider-default-dark), var(--alpha-20)) !important;
+        border-color: rgba(var(--fm-slider-default-light), var(--alpha-60)) !important;
       }
-
-
-/*      &:hover:not(.contained) {
-        background-color: transparent;
-      }
-      &.contained {
-          background-color: rgba(var(--fm-default-dark), var(--alpha-10)) !important;
-      }*/
     }
   }
 
-  /*&.hide-thumb input[type=range]::-ms-thumb*/
-  /*&.hide-thumb input[type=range]::-moz-range-thumb*/
-  &.hide-thumb input[type=range]::-webkit-slider-thumb {
+  &.rounded input {
+    /*&::-moz-range-track*/
+    /*&::-ms-track*/
+    &::-webkit-slider-runnable-track {
+      border-radius: 9999px;
+    }
+
+    /*&::-ms-thumb*/
+    /*&::-ms-range-thumb*/
+    &::-webkit-slider-thumb {
+      border-radius: 50%;
+    }
+
+    & + output {
+      border-radius: 0.25em
+    }
+  }
+
+  /*&.hide-thumb input::-ms-thumb*/
+  /*&.hide-thumb input::-moz-range-thumb*/
+  &.hide-thumb input::-webkit-slider-thumb {
     display: none;
   }
 
-  /*&.contained input[type=range]::-ms-thumb*/
-  /*&.contained input[type=range]::-moz-range-thumb*/
-  &.contained input[type=range]::-webkit-slider-thumb {
-    background-color: rgb(var(--fm-slider-default));
-  }
+  &.contained input {
+    /*&::-ms-track*/
+    /*&::-moz-range-track*/
+    &::-webkit-slider-runnable-track {
+      background-color: rgb(var(--fm-slider-default));
+      border-left: none;
+      border-right: none;
+    }
 
-  input:active::-webkit-slider-thumb {
-    border:0.5em solid rgba(var(--fm-slider-default), var(--alpha-30));
-    width: 2em;
-    height: 2em;
-    margin-top:-0.9em;
-  }
-
-  &.contained input:active::-webkit-slider-thumb {
-    border:0.5em solid rgba(var(--fm-slider-default-light), var(--alpha-60));
-  }
-
-  /*&.raised input[type=range]::-ms-thumb*/
-  /*&.raised input[type=range]::-moz-range-thumb*/
-  &.raised input[type=range]::-webkit-slider-thumb {
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    /*&::-ms-thumb*/
+    /*&::-moz-range-thumb*/
+    &::-webkit-slider-thumb {
+      border: 2px solid rgb(var(--fm-slider-default));
+      background-color: rgb(var(--fm-slider-default-text));
+    }
   }
 
   output {
+    position: absolute;
     background-color: rgb(var(--fm-slider-default));
     color: rgb(var(--fm-slider-default-text));
-    bottom: 1.5em;
+    bottom: 2em;
+    text-align: center;
+    bottom: 2em;
+    font-weight: 600;
+    display: inline-block;
+    padding: 0 0.5em;
+    left: 50%;
+    transform: translateX(-50%);
 
     &:after { 
       content: "";
@@ -233,56 +229,28 @@
       top: 100%;
       left: 50%;
     }
-
-/*    &.default {
-      background-color: rgb(var(--fm-slider-default));
-
-      &:after {
-        border-color: rgb(var(--fm-slider-default));
-      }
-    }*/
   }
-}
 
+  input:disabled + output {
+    background-color: rgba(var(--fm-slider-default-dark), var(--alpha-10)) !important;
+    color: rgba(var(--fm-slider-default-dark), var(--alpha-30)) !important;
 
+    &:after {
+      border-top: 8px solid rgba(var(--fm-slider-default-dark), var(--alpha-10)) !important;
+    }
+  }
 
-/*    &::-ms-track {
-    width: 100%;
-    height: 12.8px;
-    cursor: pointer;
-    animate: 0.2s;
-    background: transparent;
+/*  &.raised input::-moz-slider-track,
+  &.raised input::-ms-slider-track,*/
+  &.raised input::-webkit-slider-runnable-track,
+  &.raised input + output {
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  }
+
+  &.active input::-webkit-slider-thumb,
+  & input:active:not(:disabled)::-webkit-slider-thumb {
     border-color: transparent;
-    border-width: 39px 0;
-    color: transparent;
-  }
-  &::-ms-fill-lower {
-    background: #ac51b5;
-    border: 0px solid #000101;
-    border-radius: 50px;
-    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-  }
-  &::-ms-fill-upper {
-    background: #ac51b5;
-    border: 0px solid #000101;
-    border-radius: 50px;
-    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-  }
-  &::-ms-thumb {
-    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-    border: 0px solid #000000;
-    height: 20px;
-    width: 39px;
-    border-radius: 7px;
-    background: #65001c;
-    cursor: pointer;
-  }
-  &:focus::-ms-fill-lower {
-    background: #ac51b5;
-  }
-  &:focus::-ms-fill-upper {
-    background: #ac51b5;
+    box-shadow: 0 0 1px 1px rgb(var(--fm-slider-default-light, 255, 255, 255)), 0 0 6px 2px rgb(var(--fm-slider-default, 0, 0, 0));
   }
 }
-*/
 </style>

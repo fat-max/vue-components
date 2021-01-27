@@ -1,19 +1,21 @@
 <template>
-  <label class="fm-radio" :class="classes" :data-type="dataType">
-    <input
-      type="radip"
-      :class="classes"
-      v-bind:model="model"
-      v-on:change="update"
-      v-bind="attrs"
-      :indeterminate.prop="indeterminate"
-    />
-    <span class="ml-2" v-if="label">{{ label }}</span>
-  </label>
+  <div class="fm-radio" :class="classes" :data-type="dataType">
+    <label v-for="(option, key) in options" :key="key">
+      <input
+        type="radio"
+        :class="classes"
+        v-bind:model="model"
+        v-on:change="update"
+        v-bind="attrs"
+        :value="option.value"
+      />
+      <span v-if="option.label">{{ option.label }}</span>
+    </label>
+  </div>
 </template>
 
 <script>
-  import style from './../../mixins/style'
+  import style from '@/mixins/style'
 
   export default {
     name: 'FmRadio',
@@ -25,22 +27,25 @@
     props: {
       model: [String, Boolean, Object, Number, Array],
       label: String,
-      value: {
-        type: [String, Boolean, Object, Number],
+      options: {
+        type: Array,
       },
-      name: [String, Number],
       required: Boolean,
-      disabled: Boolean,
       checked: Boolean,
-      indeterminate: Boolean,
       trueValue: { default: true },
       falseValue: { default: false },
       id: {
         type: String,
         default () {
-          return 'fm-checkbox-' + this._uid
+          return 'fm-radio-' + this._uid
         }
-      }
+      },
+      name: {
+        type: String,
+        default () {
+          return 'fm-radio-' + this._uid
+        }
+      },
     },
     computed: {
       attrs () {
@@ -50,14 +55,6 @@
           disabled: this.disabled,
           required: this.required,
           checked: this.isSelected,
-          'true-value': this.trueValue,
-          'false-value': this.falseValue
-        }
-
-        if (this.hasValue) {
-          if (this.value === null || typeof this.value !== 'object') {
-            attrs.value = (this.value === null || this.value === undefined) ? '' : String(this.value)
-          }
         }
 
         return attrs
@@ -72,9 +69,6 @@
         }
 
         return this.model === this.trueValue
-      },
-      hasValue () {
-        return Object.prototype.hasOwnProperty.call(this.$options.propsData, 'value')
       },
     },
     methods: {
@@ -101,123 +95,113 @@
 </script>
 
 <style>
-.fm-checkbox {
-  z-index: 0;
-  position: relative;
-  display: inline-block;
-  /*line-height: 1.5;*/
-  color: rgba(var(--fm-default-dark), var(--alpha-90));
-  font-weight: bold;
+.fm-radio {
+  --fm-radio-default: var(--fm-default);
+  --fm-radio-default-light: var(--fm-default-light);
+  --fm-radio-default-dark: var(--fm-default-dark);
+  --fm-radio-default-text: var(--fm-default-text);
 
-  &.fm-checkbox-primary {
-  }
+  display: flex;
+  flex-direction: column;
 
-  & > input {
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    z-index: -1;
-    position: absolute;
-    left: -0.3em;
-    top: -0.55em;
-    display: block;
+  > label {
+    z-index: 0;
+    position: relative;
+    display: inline-block;
+    padding: 0;
     margin: 0;
-    border-radius: 50%;
-    width: 2.5em;
-    height: 2.5em;
-    box-shadow: none;
-    outline: none;
-    opacity: 0;
-    transform: scale(1);
-    pointer-events: none;
-    transition: opacity 0.3s, transform 0.2s;
-    z-index: -1;
-    background-color: rgb(var(--fm-default-dark));
-    /*background-color: rgba(var(--fm-default-dark), var(--alpha-90));*/
 
-    &:disabled {
-      opacity: 0;
+    input {
+      appearance: none;
+      -moz-appearance: none;
+      -webkit-appearance: none;
 
       & + span {
-        cursor: default;
-        opacity: 0.4;
+        display: inline-block;
+        cursor: pointer;
+        color: rgb(var(--fm-radio-default-dark));
 
         &::before {
-          border-color: currentColor;
+          content: "";
+          display: inline-block;
+          width: 1.2em;
+          height: 1.2em;
+          box-sizing: border-box;
+          vertical-align: top;
+          margin: 0.1em 0.5em 0.1em 0;
+          border: 2px solid rgba(var(--fm-radio-default-dark), var(--alpha-70));
+          border-radius: 50%;
+          transition: border-color 0ms, background-color 0ms;
+        }
+
+        &::after {
+          content: "";
+          display: block;
+          position: absolute;
+          top: 2px;
+          left: 2px;
+          margin: 0.22em 0.13em;
+          width: 0.7em;
+          height: 0.7em;
+          background-color: transparent;
+          border-radius: 50%;
         }
       }
-    }
 
-    &:checked,
-    &:indeterminate {
-      /*background-color: rgb(33, 150, 243);*/
-      background-color: rgb(var(--fm-default));
-
-      & + span::before,
-      & + span::before {
-        /*border-color: rgb(33, 150, 243);*/
-        border-color: rgb(var(--fm-default));
-        /*background-color: rgb(33, 150, 243);*/
-        background-color: rgb(var(--fm-default));
+      &:checked + span {
+        &::before {
+          border-color: rgb(var(--fm-radio-default));
+        }
+        &::after {
+          background-color: rgb(var(--fm-radio-default));
+        }
       }
 
-      & + span::after,
-      & + span::after {
-        border-color: rgb(255, 255, 255);
+      &:disabled + span {
+        cursor: default;
+        color: rgba(var(--fm-radio-default-dark), var(--alpha-30));
+
+        &::before {
+          border-color: rgba(var(--fm-radio-default-dark), var(--alpha-30));
+        }
       }
 
-      &:disabled + span::before,
-      &:disabled + span::before {
-        border-color: transparent;
-        background-color: currentColor;
+      &:disabled:checked + span::after {
+        background-color: rgba(var(--fm-radio-default-dark), var(--alpha-30));
       }
-    }
-
-    &:indeterminate + span::after {
-      border-left: none;
-      transform: translate(0.17em, 0.14em);
-    }
-
-  }
-
-  &:hover > input:not(:disabled) {
-    opacity: 0.1;
-
-    &:active {
-      opacity: 0.3;
     }
   }
 
-  & > span {
-    display: inline-block;
-    width: 100%;
-    cursor: pointer;
-    /*vertical-align: middle;*/
+  &.raised input + span::before {
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  }
 
-    &::before {
-      content: "";
-      display: inline-block;
-      width:1.15em;
-      height:1.15em;
-      box-sizing: border-box;
-      vertical-align: top;
-      margin:.1em 0.625em .1em -0.125em;
-      border:2px solid rgba(var(--fm-default-dark), var(--alpha-60));
-      transition: border-color 0.1s, background-color 0.1s;
+  &.active input + span::before,
+  input:active + span::before {
+    box-shadow: 0 0 1px 1px rgb(var(--fm-radio-default-light, 255, 255, 255)), 0 0 6px 2px rgb(var(--fm-radio-default, 0, 0, 0));
+  }
+
+  &.contained input {
+    & + span::before {
+      background-color: rgb(var(--fm-radio-default));
+      border-color: rgb(var(--fm-radio-default));
     }
 
-    &::after {
-      content: "";
-      display: block;
-      position: absolute;
-      top: 0.1em;
-      left: 0.4em;
-      width: 0.7em;
-      height: 0.4em;
-      border: solid 2px transparent;
-      border-right: none;
-      border-top: none;
-      transform: translate(0.2em, 0.25em) rotate(-45deg);
+    &:checked + span::after {
+      background-color: rgb(var(--fm-radio-default-text)) !important;
+    }
+
+    &:disabled + span::before {
+      background-color: rgba(var(--fm-radio-default-dark), var(--alpha-10));
+      border-color: transparent;
+    }
+
+    &:disabled:not(:checked) + span::after {
+      background-color: transparent;
+    }
+
+    &:disabled:checked + span::after {
+      background-color: rgba(var(--fm-radio-default-dark), var(--alpha-20)) !important;
     }
   }
 }
